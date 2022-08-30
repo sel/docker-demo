@@ -1,4 +1,7 @@
-FROM golang:1.19 AS build
+ARG GO_VERSION
+FROM golang:${GO_VERSION} AS build
+ARG VERSION
+
 WORKDIR /build
 
 COPY go.mod go.sum .
@@ -6,7 +9,7 @@ RUN go mod download
 
 COPY main.go .
 RUN CGO_ENABLED=0 GOOS=linux GOFLAGS=-ldflags=-w go build -o hello \
-      -ldflags="-s" \
+      -ldflags="-s -X main.VERSION=${VERSION}" \
       main.go
 
 FROM gcr.io/distroless/static-debian11 AS final
