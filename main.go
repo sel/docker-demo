@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 )
 
 // VERSION is the application version. Its value is injected through the build chain.
@@ -13,9 +14,13 @@ var VERSION string = "development"
 
 func main() {
 	http.HandleFunc("/", helloHandler)
-	port := envInt("LISTEN_PORT", 8000)
-	log.Printf("Listening on port %d", port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), nil))
+	s := &http.Server{
+		Addr:         fmt.Sprintf(":%d", envInt("LISTEN_PORT", 8000)),
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 10 * time.Second,
+	}
+	log.Printf("Listening on %s", s.Addr)
+	log.Fatal(s.ListenAndServe())
 }
 
 // envInt returns the integer value of an environment variable or otherwise returns a default.
