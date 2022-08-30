@@ -11,16 +11,17 @@ A small application to demonstrate the use of [Docker](https://www.docker.com/).
 
 ## Usage
 
-- Run `go run main.go` to run the application natively on your host machine.
-
-- Run `make run` to run the application inside a container on your host machine.
+- `go run main.go` runs the application natively on your host machine.
   By default the application is available from http://127.0.0.1:8000/
 
-- Run `make stop` to stop the running container.
+- `make run` runs the application inside a container on your host machine.
+  By default the application is available from http://127.0.0.1:8000/
 
-- Run `make build` to build a container image from the instructions in [`Dockerfile`](Dockerfile).
+- `make stop` stops the running container.
 
-- Run `make push` to build and push the container image to a registry.
+- `make build` builds a container image from the instructions in [`Dockerfile`](Dockerfile).
+
+- `make push` builds and pushes the container image to a registry.
   >**Note**
   >Modify the `REPO` variable in [`Makefile`](Makefile) to that of your own container repository.
 
