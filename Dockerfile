@@ -13,7 +13,7 @@ RUN CGO_ENABLED=0 \
       -ldflags="-s -w -X main.VERSION=${VERSION}" \
       main.go
 
-FROM gcr.io/distroless/static-debian11 AS final
+FROM scratch AS final
 COPY --from=build /usr/local/bin/docker-demo /usr/local/bin/docker-demo
 USER 65534:65534
 ENTRYPOINT [ "/usr/local/bin/docker-demo" ]
