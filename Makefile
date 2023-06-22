@@ -22,6 +22,7 @@ push: build
 .PHONY: build
 build:
 	docker build . \
+	    --squash \
 	    --build-arg GO_VERSION=$(GO_VERSION) \
 	    --build-arg VERSION=$(GIT_COMMIT) \
 	    --tag $(REPO):$(GIT_COMMIT)
