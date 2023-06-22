@@ -1,6 +1,6 @@
 PROJECT := docker-demo
 REPO := docker.io/slarkin/$(PROJECT)
-GO_VERSION := 1.19
+GO_VERSION := 1.20
 LISTEN_PORT := 8000
 
 GIT_COMMIT := $(shell git rev-parse --short HEAD)
