@@ -13,14 +13,20 @@ import (
 var VERSION string = "development"
 
 func main() {
-	http.HandleFunc("/", helloHandler)
+	logger := log.New(os.Stdout, "[STDOUT] ", log.LstdFlags)
+	startTicker(logger, 3*time.Second)
+
+	errLogger := log.New(os.Stderr, "[STDERR] ", log.LstdFlags)
+	startTicker(errLogger, 7*time.Second)
+
+	http.HandleFunc("/", versionHandler(logger))
 	s := &http.Server{
 		Addr:         fmt.Sprintf(":%d", envInt("LISTEN_PORT", 8000)),
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
-	log.Printf("Listening on %s", s.Addr)
-	log.Fatal(s.ListenAndServe())
+	logger.Printf("Listening on %s", s.Addr)
+	logger.Fatal(s.ListenAndServe())
 }
 
 // envInt returns the integer value of an environment variable or otherwise returns a default.
@@ -33,7 +39,22 @@ func envInt(varName string, defaultVal int) int {
 	return defaultVal
 }
 
-// helloHandler responds to HTTP requests with a greeting.
-func helloHandler(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprintf(w, "Hello, World!\n\nVERSION: %s", VERSION)
+// versionHandler responds to requests with a greeting and logs to a given logger.
+func versionHandler(logger *log.Logger) http.HandlerFunc {
+	msg := fmt.Sprintf("VERSION: %s", VERSION)
+	return func(w http.ResponseWriter, req *http.Request) {
+		logger.Print(msg)
+		fmt.Fprintln(w, msg)
+	}
+}
+
+// startTicker periodically writes to the given logger.
+func startTicker(logger *log.Logger, d time.Duration) {
+	ticker := time.NewTicker(d)
+	go func() {
+		for {
+			<-ticker.C
+			logger.Println()
+		}
+	}()
 }
